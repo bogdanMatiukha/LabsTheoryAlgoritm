@@ -1,68 +1,198 @@
 #include <iostream>
-#include <cmath>
-#include <iomanip>
-
 using namespace std;
 
-double distance(double x1, double y1, double z1,
-    double x2, double y2, double z2)
+void printArray(int arr[], int n)
 {
-    return sqrt(
-        pow(x2 - x1, 2) +
-        pow(y2 - y1, 2) +
-        pow(z2 - z1, 2)
-    );
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+
+    cout << endl;
 }
 
-double inputNumber()
+// Linear search
+int linearSearch(int arr[], int n, int key, int& actions)
 {
-    double number;
+    actions = 0;
 
-    while (!(cin >> number))
+    for (int i = 0; i < n; i++)
     {
-        cout << "Invalid input! Please enter a number: ";
-        cin.clear();
-        cin.ignore(1000, '\n');
+        actions++;
+
+        if (arr[i] == key)
+            return i;
     }
 
-    return number;
+    return -1;
+}
+
+// Binary search
+int binarySearch(int arr[], int n, int key, int& actions)
+{
+    actions = 0;
+
+    int left = 0;
+    int right = n - 1;
+
+    while (left <= right)
+    {
+        actions++;
+
+        int middle = left + (right - left) / 2;
+
+        if (arr[middle] == key)
+            return middle;
+
+        if (arr[middle] < key)
+            left = middle + 1;
+        else
+            right = middle - 1;
+    }
+
+    return -1;
+}
+
+// Bubble sort
+void bubbleSort(int arr[], int n)
+{
+    int totalActions = 0;
+
+    cout << "\n--- Bubble Sort ---\n";
+
+    cout << "Initial array: ";
+    printArray(arr, n);
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        int actions = 0;
+
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            actions++;
+
+            if (arr[j] > arr[j + 1])
+            {
+                swap(arr[j], arr[j + 1]);
+                totalActions++;
+            }
+        }
+
+        cout << "Step " << i + 1 << ": ";
+        printArray(arr, n);
+
+        cout << "Number of comparisons at this step: "
+            << actions << endl;
+
+        cout << "Total number of swaps: "
+            << totalActions << endl;
+    }
+}
+
+// Selection sort
+void selectionSort(int arr[], int n)
+{
+    int totalActions = 0;
+
+    cout << "\n--- Selection Sort ---\n";
+
+    cout << "Initial array: ";
+    printArray(arr, n);
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        int actions = 0;
+        int minIndex = i;
+
+        for (int j = i + 1; j < n; j++)
+        {
+            actions++;
+            totalActions++;
+
+            if (arr[j] < arr[minIndex])
+                minIndex = j;
+        }
+
+        if (minIndex != i)
+            swap(arr[i], arr[minIndex]);
+
+        cout << "Step " << i + 1 << ": ";
+        printArray(arr, n);
+
+        cout << "Number of comparisons at this step: "
+            << actions << endl;
+
+        cout << "Total number of comparisons: "
+            << totalActions << endl;
+    }
 }
 
 int main()
 {
-    double xA1, yA1, zA1;
-    double xB1, yB1, zB1;
-    double xC1, yC1, zC1;
-    double xA2, yA2, zA2;
+    const int n = 10;
 
-    cout << "Enter coordinates of A1:" << endl;
-    xA1 = inputNumber();
-    yA1 = inputNumber();
-    zA1 = inputNumber();
+    int arr[n] = { 37, 12, 85, 4, 56, 23, 91, 18, 7, 64 };
 
-    cout << "Enter coordinates of B1:" << endl;
-    xB1 = inputNumber();
-    yB1 = inputNumber();
-    zB1 = inputNumber();
+    cout << "Initial array:\n";
+    printArray(arr, n);
 
-    cout << "Enter coordinates of C1:" << endl;
-    xC1 = inputNumber();
-    yC1 = inputNumber();
-    zC1 = inputNumber();
+    // Linear search
+    int key;
 
-    cout << "Enter coordinates of A2:" << endl;
-    xA2 = inputNumber();
-    yA2 = inputNumber();
-    zA2 = inputNumber();
+    cout << "\nEnter an element to search: ";
+    cin >> key;
 
-    double a = distance(xA1, yA1, zA1, xB1, yB1, zB1);
-    double b = distance(xB1, yB1, zB1, xC1, yC1, zC1);
-    double c = distance(xA1, yA1, zA1, xA2, yA2, zA2);
+    int actions;
 
-    double total_length = 4 * (a + b + c);
+    int result = linearSearch(arr, n, key, actions);
 
-    cout << fixed << setprecision(2);
-    cout << "Total length of all edges = " << total_length << endl;
+    if (result != -1)
+    {
+        cout << "Linear search: element found at position "
+            << result << endl;
+    }
+    else
+    {
+        cout << "Linear search: element not found." << endl;
+    }
+
+    cout << "Number of performed actions: "
+        << actions << endl;
+
+    int bubbleArray[n];
+    int selectionArray[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        bubbleArray[i] = arr[i];
+        selectionArray[i] = arr[i];
+    }
+
+    // Sorting
+    bubbleSort(bubbleArray, n);
+    selectionSort(selectionArray, n);
+
+    // Binary search
+    cout << "\n--- Binary Search ---\n";
+
+    cout << "Sorted array: ";
+    printArray(selectionArray, n);
+
+    cout << "Enter an element for binary search: ";
+    cin >> key;
+
+    result = binarySearch(selectionArray, n, key, actions);
+
+    if (result != -1)
+    {
+        cout << "Binary search: element found at position "
+            << result << endl;
+    }
+    else
+    {
+        cout << "Binary search: element not found." << endl;
+    }
+
+    cout << "Number of performed actions: "
+        << actions << endl;
 
     return 0;
 }
