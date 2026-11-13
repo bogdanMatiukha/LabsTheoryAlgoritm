@@ -1,211 +1,178 @@
-class Node:
-    def __init__(self, item):
-        """
-        Створює новий вузол списку.
-        :param item: значення нового елемента
-        """
-        self.mItem = item
-        self.mNext = None
+from Stack import Stack
+from Queue import Queue
+from Deque import Deque
 
 
-class LinkedList:
-    """Клас для роботи з однозв'язним кільцевим списком."""
-
-    def __init__(self):
-        self.mFirst = None
-
-    def empty(self):
-        """
-        Перевіряє, чи список є порожнім.
-        :return: True, якщо список порожній, інакше False
-        """
-        return self.mFirst is None
-
-    def appendToEndList(self, item):
-        """
-        Додає новий елемент у кінець списку.
-        :param item: значення нового елемента
-        """
-        node = Node(item)
-
-        if self.empty():
-            self.mFirst = node
-            node.mNext = node
-        else:
-            current = self.mFirst
-
-            while current.mNext != self.mFirst:
-                current = current.mNext
-
-            current.mNext = node
-            node.mNext = self.mFirst
-
-    def print_list(self):
-        """
-        Виводить усі елементи списку на екран.
-        """
-        if self.empty():
-            print("Список порожній.")
-            return
-
-        current = self.mFirst
-
-        while True:
-            print(current.mItem, end=" -> ")
-            current = current.mNext
-
-            if current == self.mFirst:
-                break
-
-        print("(початок списку)")
-
-    def insert_after_middle(self, item):
-        """
-        Додає новий елемент після середнього елемента списку.
-        :param item: значення нового елемента
-        """
-        if self.empty():
-            print("Список порожній.")
-            return
-
-        size = self.get_size()
-        middle = (size - 1) // 2
-
-        current = self.mFirst
-
-        for i in range(middle):
-            current = current.mNext
-
-        node = Node(item)
-        node.mNext = current.mNext
-        current.mNext = node
-
-        print("Елемент успішно додано після середнього.")
-
-    def delete(self, item):
-        """
-        Видаляє перший знайдений елемент із заданим значенням.
-        :param item: значення елемента, який потрібно видалити
-        """
-        if self.empty():
-            print("Список порожній.")
-            return
-
-        current = self.mFirst
-        previous = None
-
-        while True:
-            if current.mItem == item:
-
-                if previous is None:
-                    if current.mNext == self.mFirst:
-                        self.mFirst = None
-                    else:
-                        last = self.mFirst
-
-                        while last.mNext != self.mFirst:
-                            last = last.mNext
-
-                        self.mFirst = current.mNext
-                        last.mNext = self.mFirst
-                else:
-                    previous.mNext = current.mNext
-
-                print("Елемент успішно видалено.")
-                return
-
-            previous = current
-            current = current.mNext
-
-            if current == self.mFirst:
-                break
-
-        print("Елемент не знайдено.")
-
-    def get_size(self):
-        """
-        Визначає кількість елементів у списку.
-        :return: кількість елементів списку
-        """
-        if self.empty():
-            return 0
-
-        count = 0
-        current = self.mFirst
-
-        while True:
-            count += 1
-            current = current.mNext
-
-            if current == self.mFirst:
-                break
-
-        return count
-
-    def create_calendar(self):
-        """
-        Створює календар із назвами дванадцяти місяців року.
-        """
-        self.mFirst = None
-
-        months = [
-            "Січень",
-            "Лютий",
-            "Березень",
-            "Квітень",
-            "Травень",
-            "Червень",
-            "Липень",
-            "Серпень",
-            "Вересень",
-            "Жовтень",
-            "Листопад",
-            "Грудень",
-        ]
-
-        for month in months:
-            self.appendToEndList(month)
-
-        print("Календар успішно створено.")
-
-
-def main():
-    my_list = LinkedList()
+def stack_menu(stack: Stack):
+    """Меню для виконання операцій над стеком."""
 
     while True:
-        print("\n========== МЕНЮ ==========")
-        print("1. Додати елемент у кінець списку")
-        print("2. Вивести список")
-        print("3. Додати елемент після середнього")
-        print("4. Видалити певний елемент")
-        print("5. Визначити розмір списку")
-        print("6. Створити календар")
-        print("0. Вихід")
+        print("\n========== СТЕК ==========")
+        print("1. Додати елемент (Push)")
+        print("2. Видалити елемент (Pop)")
+        print("3. Визначити розмір")
+        print("4. Вивести стек")
+        print("0. Повернутися назад")
         print("==========================")
 
         choice = input("Оберіть дію: ")
 
         if choice == "1":
             value = input("Введіть значення: ")
-            my_list.appendToEndList(value)
-            print("Елемент додано.")
+            stack.push(value)
+            print("Елемент додано до стека.")
 
         elif choice == "2":
-            my_list.print_list()
+            item = stack.pop()
+
+            if item is None:
+                print("Стек порожній.")
+            else:
+                print("Видалений елемент:", item)
 
         elif choice == "3":
-            value = input("Введіть новий елемент: ")
-            my_list.insert_after_middle(value)
+            print("Розмір стека:", stack.size())
 
         elif choice == "4":
-            value = input("Введіть елемент для видалення: ")
-            my_list.delete(value)
+            stack.print_stack()
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Неправильний вибір. Спробуйте ще раз.")
+
+
+def queue_menu(queue: Queue):
+    """Меню для виконання операцій над чергою."""
+
+    while True:
+        print("\n========== ЧЕРГА ==========")
+        print("1. Додати елемент")
+        print("2. Видалити елемент")
+        print("3. Визначити розмір")
+        print("4. Вивести чергу")
+        print("0. Повернутися назад")
+        print("===========================")
+
+        choice = input("Оберіть дію: ")
+
+        if choice == "1":
+            value = input("Введіть значення: ")
+            queue.enqueue(value)
+            print("Елемент додано до черги.")
+
+        elif choice == "2":
+            item = queue.dequeue()
+
+            if item is None:
+                print("Черга порожня.")
+            else:
+                print("Видалений елемент:", item)
+
+        elif choice == "3":
+            print("Розмір черги:", queue.size())
+
+        elif choice == "4":
+            queue.print_queue()
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Неправильний вибір. Спробуйте ще раз.")
+
+
+def deque_menu(deque: Deque):
+    """Меню для виконання операцій над деком."""
+
+    while True:
+        print("\n========== ДЕК ==========")
+        print("1. Додати елемент ліворуч")
+        print("2. Додати елемент праворуч")
+        print("3. Видалити елемент ліворуч")
+        print("4. Видалити елемент праворуч")
+        print("5. Визначити розмір")
+        print("6. Вивести дек")
+        print("0. Повернутися назад")
+        print("=========================")
+
+        choice = input("Оберіть дію: ")
+
+        if choice == "1":
+            value = input("Введіть значення: ")
+            deque.push_left(value)
+            print("Елемент додано ліворуч.")
+
+        elif choice == "2":
+            value = input("Введіть значення: ")
+            deque.push_right(value)
+            print("Елемент додано праворуч.")
+
+        elif choice == "3":
+            item = deque.pop_left()
+
+            if item is None:
+                print("Дек порожній.")
+            else:
+                print("Видалений елемент:", item)
+
+        elif choice == "4":
+            item = deque.pop_right()
+
+            if item is None:
+                print("Дек порожній.")
+            else:
+                print("Видалений елемент:", item)
 
         elif choice == "5":
-            print("Розмір списку:", my_list.get_size())
+            print("Розмір дека:", deque.size())
 
         elif choice == "6":
-            my_list.create_calendar()
+            deque.print_deque()
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Неправильний вибір. Спробуйте ще раз.")
+
+
+def main():
+    """Головна функція програми."""
+
+    stack = Stack()
+    queue = Queue()
+    deque = Deque()
+
+    # example data
+    arr = [10, 20, 30, 40, 50]
+
+    for item in arr:
+        stack.push(item)
+        queue.enqueue(item)
+        deque.push_left(item)
+
+    # work menu
+
+    while True:
+        print("\n========== ГОЛОВНЕ МЕНЮ ==========")
+        print("1. Робота зі стеком")
+        print("2. Робота з чергою")
+        print("3. Робота з деком")
+        print("0. Вихід")
+        print("==================================")
+
+        choice = input("Оберіть дію: ")
+
+        if choice == "1":
+            stack_menu(stack)
+
+        elif choice == "2":
+            queue_menu(queue)
+
+        elif choice == "3":
+            deque_menu(deque)
 
         elif choice == "0":
             print("Завершення програми.")
